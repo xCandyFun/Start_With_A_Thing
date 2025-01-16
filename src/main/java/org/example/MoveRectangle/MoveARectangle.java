@@ -12,18 +12,11 @@ public class MoveARectangle {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400,400);
 
-        // Create the custom panel for graphics
-        //MovingRectanglePanel panel = new MovingRectanglePanel();
-
         // Show the start screen
         StartScreen startScreen = new StartScreen(frame);
 
-        // Add the Panel to the frame
-        //frame.add(panel);
+        // Add the startScreen to the frame
         frame.add(startScreen);
         frame.setVisible(true);
-
-        // Request focus to capture keyboard input
-        //panel.requestFocusInWindow();
     }
 }

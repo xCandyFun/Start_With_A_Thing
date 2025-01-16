@@ -135,33 +135,13 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        // Not in use
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
         activeKey.add(e.getKeyCode());
-
-        // Save the current position of the main rectangle
-//        int previousRectX = rectX;
-//        int previousRectY = rectY;
-
-        // Move the rectangle based on key press
-//        switch (e.getKeyCode()) {
-//            case KeyEvent.VK_W -> rectY -= MOVE_DISTANCE;
-//            case KeyEvent.VK_S -> rectY += MOVE_DISTANCE;
-//            case KeyEvent.VK_A -> rectX -= MOVE_DISTANCE;
-//            case KeyEvent.VK_D -> rectX += MOVE_DISTANCE;
-//        }
-
-        // Update the following rectangle's position to the main rectangle's previous position
-//        followRectX = previousRectX;
-//        followRectY = previousRectY;
-
-        // Repaint the panel to update the rectangle position
         repaint();
-
     }
 
     @Override
