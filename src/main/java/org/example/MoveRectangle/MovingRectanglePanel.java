@@ -38,10 +38,18 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
     //Update the position of the main rectangle based on active keys
     private void updatePosition(){
-        if (activeKey.contains(KeyEvent.VK_W)) rectY -= MOVE_DISTANCE;
-        if (activeKey.contains(KeyEvent.VK_S)) rectY += MOVE_DISTANCE;
-        if (activeKey.contains(KeyEvent.VK_A)) rectX -= MOVE_DISTANCE;
-        if (activeKey.contains(KeyEvent.VK_D)) rectX += MOVE_DISTANCE;
+        if (activeKey.contains(KeyEvent.VK_W) && rectY > 0 ){
+            rectY -= MOVE_DISTANCE;
+        }
+        if (activeKey.contains(KeyEvent.VK_S) && rectY + RECT_HEIGHT < getHeight()) {
+            rectY += MOVE_DISTANCE;
+        }
+        if (activeKey.contains(KeyEvent.VK_A) && rectX >0){
+            rectX -= MOVE_DISTANCE;
+        }
+        if (activeKey.contains(KeyEvent.VK_D) && rectX + RECT_WIDTH < getWidth()) {
+            rectX += MOVE_DISTANCE;
+        }
 
         repaint();
     }
