@@ -62,13 +62,27 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
         // Normalize the direction and move the follow rectangle
         double distance = Math.sqrt(dx * dx + dy * dy);
+
         if (distance > 0) {
             followRectX += Math.round(followSpeed * (dx / distance ));
             followRectY += Math.round(followSpeed * (dy / distance ));
         }
 
+        // Check for collision
+        if (checkCollision()) {
+            JOptionPane.showMessageDialog(this, "Game Over! The hunter caught you.");
+            System.exit(0);
+        }
+
         // Repaint the panel to update positions
         repaint();
+    }
+
+    private boolean checkCollision(){
+        return rectX < followRectX + RECT_WIDTH &&
+                rectX + RECT_WIDTH > followRectX &&
+                rectY < followRectY + RECT_HEIGHT &&
+                rectY + RECT_HEIGHT > followRectY;
     }
 
     @Override
@@ -87,7 +101,6 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         g.fillRect(followRectX, followRectY, RECT_WIDTH, RECT_HEIGHT);
 
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {
