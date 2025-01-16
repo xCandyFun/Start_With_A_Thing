@@ -19,6 +19,8 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     private final double followSpeed = 1;
 
     private final Set<Integer> activeKey = new HashSet<>();
+    private Timer moveTimer;
+    private Timer followTimer;
 
     public MovingRectanglePanel(){
         // Add the KeyListener to the panel
@@ -28,12 +30,12 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         this.requestFocusInWindow();
 
         // Timer to handle continuous movement
-        Timer moveTimer = new Timer(40, e -> updatePosition());
+        moveTimer = new Timer(40, e -> updatePosition());
         moveTimer.start();
 
         // Start the following mechanism
-        Timer timer = new Timer(15, e-> moveFollowing());
-        timer.start();
+        followTimer = new Timer(15, e-> moveFollowing());
+        followTimer.start();
     }
 
     //Update the position of the main rectangle based on active keys
@@ -70,8 +72,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
         // Check for collision
         if (checkCollision()) {
-            JOptionPane.showMessageDialog(this, "Game Over! The hunter caught you.");
-            System.exit(0);
+            endGame();
         }
 
         // Repaint the panel to update positions
@@ -83,6 +84,13 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
                 rectX + RECT_WIDTH > followRectX &&
                 rectY < followRectY + RECT_HEIGHT &&
                 rectY + RECT_HEIGHT > followRectY;
+    }
+
+    private void endGame() {
+        moveTimer.stop();
+        followTimer.stop();
+        JOptionPane.showMessageDialog(this, "Game Over! The hunter caught you.");
+        System.exit(0);
     }
 
     @Override
