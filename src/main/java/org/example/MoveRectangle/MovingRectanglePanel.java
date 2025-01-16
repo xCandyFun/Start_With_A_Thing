@@ -9,18 +9,21 @@ import java.util.Set;
 
 public class MovingRectanglePanel extends JPanel implements KeyListener {
 
-    private int rectX = 250;
-    private int rectY = 150;
+    private int rectX = 280;
+    private int rectY = 330;
     private final int RECT_WIDTH = 30;
     private final int RECT_HEIGHT = 30;
     private final int MOVE_DISTANCE = 10;
     private int followRectX = 30;
-    private int followRectY = 30;
-    private final double followSpeed = 1;
+    private int followRectY = 50;
+    private double followSpeed = 1;
 
     private final Set<Integer> activeKey = new HashSet<>();
     private Timer moveTimer;
     private Timer followTimer;
+    private Timer clockTimer;
+
+    private int elapsedTime = 0;
 
     public MovingRectanglePanel(){
         // Add the KeyListener to the panel
@@ -36,20 +39,33 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         // Start the following mechanism
         followTimer = new Timer(15, e-> moveFollowing());
         followTimer.start();
+
+        // Timer for game clock
+        clockTimer = new Timer(1000, e -> {
+            elapsedTime++; // increment the elapsed time every second
+
+            // Increase the hunter speed every 10 seconds
+            if (elapsedTime % 10 == 0){
+                followSpeed += 0.5;
+            }
+
+            repaint(); // Repaint to update the displayed
+        });
+        clockTimer.start();
     }
 
     //Update the position of the main rectangle based on active keys
     private void updatePosition(){
-        if (activeKey.contains(KeyEvent.VK_W) && rectY > 0 ){
+        if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP) && rectY > 0 ){
             rectY -= MOVE_DISTANCE;
         }
-        if (activeKey.contains(KeyEvent.VK_S) && rectY + RECT_HEIGHT < getHeight()) {
+        if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN) && rectY + RECT_HEIGHT < getHeight()) {
             rectY += MOVE_DISTANCE;
         }
-        if (activeKey.contains(KeyEvent.VK_A) && rectX >0){
+        if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT) && rectX >0){
             rectX -= MOVE_DISTANCE;
         }
-        if (activeKey.contains(KeyEvent.VK_D) && rectX + RECT_WIDTH < getWidth()) {
+        if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT) && rectX + RECT_WIDTH < getWidth()) {
             rectX += MOVE_DISTANCE;
         }
 
@@ -89,6 +105,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     private void endGame() {
         moveTimer.stop();
         followTimer.stop();
+        clockTimer.stop();
         JOptionPane.showMessageDialog(this, "Game Over! The hunter caught you.");
         System.exit(0);
     }
@@ -107,6 +124,12 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         // Draw the following rectangle
         g.setColor(Color.RED);
         g.fillRect(followRectX, followRectY, RECT_WIDTH, RECT_HEIGHT);
+
+        // Display the elapsed time
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 16));
+        g.drawString("Time: " + elapsedTime + "s", 10,20);
+        g.drawString("Hunter speed: " + String.format("%.1f", followSpeed), 10, 40);
 
     }
 
