@@ -67,8 +67,8 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
             elapsedTime++; // increment the elapsed time every second
 
             // Increase the hunter speed every 10 seconds
-            if (elapsedTime % 5 == 0){
-                followSpeed += 0.5;
+            if (elapsedTime % 10 == 0){
+                followSpeed += 0.7;
             }
 
             repaint(); // Repaint to update the displayed
@@ -78,17 +78,25 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
     //Update the position of the main rectangle based on active keys
     private void updatePosition(){
-        if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP) && rectY > 0 ){
-            rectY -= MOVE_DISTANCE;
+        if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP)){
+            if (rectY > 0) {
+                rectY -= MOVE_DISTANCE;
+            }
         }
-        if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN) && rectY + RECT_HEIGHT < getHeight()) {
-            rectY += MOVE_DISTANCE;
+        if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN)) {
+            if (rectY + RECT_HEIGHT < getHeight()) {
+                rectY += MOVE_DISTANCE;
+            }
         }
-        if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT) && rectX >0){
-            rectX -= MOVE_DISTANCE;
+        if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT)){
+            if (rectX > 0) {
+                rectX -= MOVE_DISTANCE;
+            }
         }
-        if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT) && rectX + RECT_WIDTH < getWidth()) {
-            rectX += MOVE_DISTANCE;
+        if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT)) {
+            if (rectX + RECT_WIDTH < getWidth()) {
+                rectX += MOVE_DISTANCE;
+            }
         }
 
         // Ensure the rectangle stays within bounds
