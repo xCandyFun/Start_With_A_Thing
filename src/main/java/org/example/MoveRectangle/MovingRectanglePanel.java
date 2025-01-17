@@ -5,18 +5,32 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.*;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class MovingRectanglePanel extends JPanel implements KeyListener {
 
+    // Main rectangle start position
     private int rectX = 280;
     private int rectY = 330;
+
+    // Main rectangle size
     private final int RECT_WIDTH = 30;
     private final int RECT_HEIGHT = 30;
+
+    // Main rectangle movement speed
     private final int MOVE_DISTANCE = 10;
+
+    // The following rectangle start position
     private int followRectX = 30;
     private int followRectY = 50;
+
+    // The following rectangle start speed
     private double followSpeed = 1;
+
+    private final int CIRCLE_DIAMETER = 20;
+    private int circleX, circleY;
+    private int score = 0;
 
     private final Set<Integer> activeKey = new HashSet<>();
     private Timer moveTimer;
@@ -24,13 +38,21 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     private Timer clockTimer;
 
     private int elapsedTime = 0;
+    private final Random random = new Random();
 
     public MovingRectanglePanel(){
         // Add the KeyListener to the panel
         this.addKeyListener(this);
         this.setFocusable(true); // Ensure the panel can receive focus
-
         this.requestFocusInWindow();
+
+        // Add a ComponentListener to ensure the panel is ready before spawning the circle
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                spawnNewCircle();
+            }
+        });
 
         // Timer to handle continuous movement
         moveTimer = new Timer(40, e -> updatePosition());
@@ -45,7 +67,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
             elapsedTime++; // increment the elapsed time every second
 
             // Increase the hunter speed every 10 seconds
-            if (elapsedTime % 10 == 0){
+            if (elapsedTime % 5 == 0){
                 followSpeed += 0.5;
             }
 
@@ -69,7 +91,47 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
             rectX += MOVE_DISTANCE;
         }
 
+        // Ensure the rectangle stays within bounds
+        //if (rectX < 0) rectX = 0;
+        //if (rectY < 0) rectY = 0;
+        //if (rectX + RECT_WIDTH > getWidth()) rectX = getWidth() - RECT_WIDTH;
+        //if (rectY + RECT_HEIGHT > getHeight()) rectY = getHeight() - RECT_HEIGHT;
+
+        // Check for circle collision
+        if (checkCircleCollision()) {
+            score++;
+            spawnNewCircle();
+        }
+
         repaint();
+    }
+
+    private void spawnNewCircle() {
+        // Generate random position for the circle within the panel
+        if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER){
+            circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
+            circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
+        }
+    }
+
+    private boolean checkCircleCollision(){
+        int circleCenterX = circleX + CIRCLE_DIAMETER / 2;
+        int circleCenterY = circleY + CIRCLE_DIAMETER / 2;
+
+        int rectCenterX = rectX + CIRCLE_DIAMETER / 2;
+        int rectCenterY = rectY + CIRCLE_DIAMETER / 2;
+
+        double distance = Math.sqrt(Math.pow(circleCenterX- rectCenterX, 2) + Math.pow(circleCenterY - rectCenterY, 2));
+        boolean isColliding = distance < (CIRCLE_DIAMETER / 2 + Math.min(RECT_WIDTH, RECT_HEIGHT) / 2);
+
+        if (isColliding) {
+            //score++;
+            spawnNewCircle();
+
+            // Decrease the hunter's speed by 0.1, but ensure it doesn't go below a minimum threshold (e.g., 0.5)
+            followSpeed = Math.max(0.5, followSpeed - 0.1);
+        }
+        return isColliding;
     }
 
     // Move the hunter rectangle towards the main rectangle
@@ -87,7 +149,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         }
 
         // Check for collision
-        if (checkCollision()) {
+        if (checkRectangleCollision()) {
             endGame();
         }
 
@@ -95,7 +157,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         repaint();
     }
 
-    private boolean checkCollision(){
+    private boolean checkRectangleCollision(){
         return rectX < followRectX + RECT_WIDTH &&
                 rectX + RECT_WIDTH > followRectX &&
                 rectY < followRectY + RECT_HEIGHT &&
@@ -125,11 +187,16 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         g.setColor(Color.RED);
         g.fillRect(followRectX, followRectY, RECT_WIDTH, RECT_HEIGHT);
 
+        // Draw the circle
+        g.setColor(Color.GREEN);
+        g.fillOval(circleX, circleY, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+
         // Display the elapsed time
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("Time: " + elapsedTime + "s", 10,20);
         g.drawString("Hunter speed: " + String.format("%.1f", followSpeed), 10, 40);
+        g.drawString("Score: " + score, 10, 60);
 
     }
 
