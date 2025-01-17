@@ -32,6 +32,12 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     private int circleX, circleY;
     private int score = 0;
 
+    // Wall properties
+    private final int Wall_X = 150;
+    private final int Wall_Y = 150;
+    private final int Wall_WIDTH = 100;
+    private final int Wall_HEIGHT = 20;
+
     private final Set<Integer> activeKey = new HashSet<>();
     private Timer moveTimer;
     private Timer followTimer;
@@ -78,25 +84,38 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
     //Update the position of the main rectangle based on active keys
     private void updatePosition(){
+        int newX = rectX;
+        int newY = rectY;
+
         if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP)){
             if (rectY > 0) {
-                rectY -= MOVE_DISTANCE;
+                //rectY -= MOVE_DISTANCE;
+                newY -= MOVE_DISTANCE;
             }
         }
         if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN)) {
             if (rectY + RECT_HEIGHT < getHeight()) {
-                rectY += MOVE_DISTANCE;
+                //rectY += MOVE_DISTANCE;
+                newY += MOVE_DISTANCE;
             }
         }
         if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT)){
             if (rectX > 0) {
-                rectX -= MOVE_DISTANCE;
+                //rectX -= MOVE_DISTANCE;
+                newX -= MOVE_DISTANCE;
             }
         }
         if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT)) {
             if (rectX + RECT_WIDTH < getWidth()) {
-                rectX += MOVE_DISTANCE;
+                //rectX += MOVE_DISTANCE;
+                newX += MOVE_DISTANCE;
             }
+        }
+
+        // Check collision with the wall
+        if (!checkWallCollision(newX, newY, RECT_WIDTH, RECT_HEIGHT)) {
+            rectX = newX;
+            rectY = newY;
         }
 
         // Ensure the rectangle stays within bounds
@@ -112,6 +131,13 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         }
 
         repaint();
+    }
+
+    private boolean checkWallCollision(int rectX, int rectY, int rectWidth, int rectHeight){
+        return rectX < Wall_X + Wall_WIDTH &&
+                rectX + rectWidth > Wall_X &&
+                rectY < Wall_Y + Wall_HEIGHT &&
+                rectY + rectHeight > Wall_Y;
     }
 
     private void spawnNewCircle() {
@@ -144,6 +170,9 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
     // Move the hunter rectangle towards the main rectangle
     private void moveFollowing() {
+        int newFollowX = followRectX;
+        int newFollowY = followRectY;
+
         // Calculate the difference
         int dx = rectX - followRectX;
         int dy = rectY - followRectY;
@@ -152,8 +181,16 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         double distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance > 0) {
-            followRectX += Math.round(followSpeed * (dx / distance ));
-            followRectY += Math.round(followSpeed * (dy / distance ));
+            //followRectX += Math.round(followSpeed * (dx / distance ));
+            //followRectY += Math.round(followSpeed * (dy / distance ));
+            newFollowX += Math.round(followSpeed * (dx / distance));
+            newFollowY += Math.round(followSpeed * (dy / distance));
+        }
+
+        //Check collision with the wall
+        if (!checkWallCollision(newFollowX, newFollowY, RECT_WIDTH, RECT_HEIGHT)) {
+            followRectX = newFollowX;
+            followRectY = newFollowY;
         }
 
         // Check for collision
@@ -198,6 +235,10 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         // Draw the circle
         g.setColor(Color.GREEN);
         g.fillOval(circleX, circleY, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+
+        //Draw the wall
+        g.setColor(Color.BLACK);
+        g.fillRect(Wall_X, Wall_Y, Wall_WIDTH,Wall_HEIGHT);
 
         // Display the elapsed time
         g.setColor(Color.BLACK);
