@@ -38,6 +38,12 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     private final int Wall_WIDTH = 100;
     private final int Wall_HEIGHT = 20;
 
+    // Second wall properties
+    private final int Wall2_X = 270;
+    private final int Wall2_Y = 220;
+    private final int Wall2_WIDTH = 20;
+    private final int Wall2_HEIGHT = 100;
+
     private final Set<Integer> activeKey = new HashSet<>();
     private Timer moveTimer;
     private Timer followTimer;
@@ -152,12 +158,17 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         repaint();
     }
 
-    private boolean checkWallCollision(int x, int y, int rectWidth, int rectHeight){
-        return x < Wall_X + Wall_WIDTH &&
-                x + rectWidth > Wall_X &&
-                y < Wall_Y + Wall_HEIGHT &&
-                y + rectHeight > Wall_Y;
+    private boolean checkWallCollision(int nextX, int nextY, int rectWidth, int rectHeight){
+        return (isWallCollision(Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+                isWallCollision(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT, nextX, nextY, rectWidth, rectHeight));
         //return isWallCollisionHorizontal(nextX, rectWidth) && isWallCollisionVertical(nextY, rectHeight);
+    }
+
+    private boolean isWallCollision(int wallX, int wallY, int wallWidth, int wallHeight, int rectX, int rectY, int rectWidth, int rectHeight) {
+        return rectX < wallX + wallWidth &&
+                rectX + rectWidth > wallX &&
+                rectY < wallY + wallHeight &&
+                rectY + rectHeight > wallY;
     }
 
     private boolean isWallCollisionHorizontal(int nextX, int rectWidth) {
@@ -299,6 +310,9 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         //Draw the wall
         g.setColor(Color.BLACK);
         g.fillRect(Wall_X, Wall_Y, Wall_WIDTH,Wall_HEIGHT);
+
+        g.fillRect(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT);
+
 
         // Display the elapsed time
         g.setColor(Color.BLACK);
