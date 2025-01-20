@@ -88,35 +88,54 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         int newY = rectY;
 
         if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP)){
-            if (rectY > 0) {
-                //rectY -= MOVE_DISTANCE;
-                newY -= MOVE_DISTANCE;
-            }
+            newY -= MOVE_DISTANCE;
+//            if (rectY > 0) {
+//                //rectY -= MOVE_DISTANCE;
+//                newY -= MOVE_DISTANCE;
+//            }
         }
         if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN)) {
-            if (rectY + RECT_HEIGHT < getHeight()) {
-                //rectY += MOVE_DISTANCE;
-                newY += MOVE_DISTANCE;
-            }
+            newY += MOVE_DISTANCE;
+//            if (rectY + RECT_HEIGHT < getHeight()) {
+//                //rectY += MOVE_DISTANCE;
+//                newY += MOVE_DISTANCE;
+//            }
         }
         if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT)){
-            if (rectX > 0) {
-                //rectX -= MOVE_DISTANCE;
-                newX -= MOVE_DISTANCE;
-            }
+            newX -= MOVE_DISTANCE;
+//            if (rectX > 0) {
+//                //rectX -= MOVE_DISTANCE;
+//                newX -= MOVE_DISTANCE;
+//            }
         }
         if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT)) {
-            if (rectX + RECT_WIDTH < getWidth()) {
-                //rectX += MOVE_DISTANCE;
-                newX += MOVE_DISTANCE;
-            }
+            newX += MOVE_DISTANCE;
+//            if (rectX + RECT_WIDTH < getWidth()) {
+//                //rectX += MOVE_DISTANCE;
+//                newX += MOVE_DISTANCE;
+//            }
         }
 
         // Check collision with the wall
-        if (!checkWallCollision(newX, newY, RECT_WIDTH, RECT_HEIGHT)) {
-            rectX = newX;
-            rectY = newY;
+//        if (!checkWallCollision(newX, newY, RECT_WIDTH, RECT_HEIGHT)) {
+//            rectX = newX;
+//            rectY = newY;
+//        }
+        if (checkWallCollision(newX, rectY, RECT_WIDTH, RECT_HEIGHT)) {
+            newX = rectX;
         }
+        if (checkWallCollision(rectX, newY, RECT_WIDTH, RECT_HEIGHT)) {
+            newY = rectY;
+        }
+//        if (isWallCollisionHorizontal(newX, RECT_WIDTH)) {
+//            newX = rectX;
+//        }
+//        if (isWallCollisionVertical(newY, RECT_HEIGHT)){
+//            newY = rectY;
+//        }
+
+        rectX = newX;
+        rectY = newY;
 
         // Ensure the rectangle stays within bounds
         //if (rectX < 0) rectX = 0;
@@ -133,11 +152,20 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         repaint();
     }
 
-    private boolean checkWallCollision(int rectX, int rectY, int rectWidth, int rectHeight){
-        return rectX < Wall_X + Wall_WIDTH &&
-                rectX + rectWidth > Wall_X &&
-                rectY < Wall_Y + Wall_HEIGHT &&
-                rectY + rectHeight > Wall_Y;
+    private boolean checkWallCollision(int x, int y, int rectWidth, int rectHeight){
+        return x < Wall_X + Wall_WIDTH &&
+                x + rectWidth > Wall_X &&
+                y < Wall_Y + Wall_HEIGHT &&
+                y + rectHeight > Wall_Y;
+        //return isWallCollisionHorizontal(nextX, rectWidth) && isWallCollisionVertical(nextY, rectHeight);
+    }
+
+    private boolean isWallCollisionHorizontal(int nextX, int rectWidth) {
+        return nextX < Wall_X + Wall_WIDTH && nextX + rectWidth > Wall_X;
+    }
+
+    private boolean isWallCollisionVertical(int nextY, int rectHeight) {
+        return nextY < Wall_Y + Wall_HEIGHT && nextY + rectHeight > Wall_Y;
     }
 
     private void spawnNewCircle() {
@@ -188,10 +216,25 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         }
 
         //Check collision with the wall
-        if (!checkWallCollision(newFollowX, newFollowY, RECT_WIDTH, RECT_HEIGHT)) {
-            followRectX = newFollowX;
-            followRectY = newFollowY;
+//        if (!checkWallCollision(newFollowX, newFollowY, RECT_WIDTH, RECT_HEIGHT)) {
+//            followRectX = newFollowX;
+//            followRectY = newFollowY;
+//        }
+        if (checkWallCollision(newFollowX, followRectY, RECT_WIDTH, RECT_HEIGHT)) {
+            newFollowX = followRectX;
         }
+        if (checkWallCollision(followRectX, newFollowY, RECT_WIDTH, RECT_HEIGHT)) {
+            newFollowY = followRectY;
+        }
+//        if (isWallCollisionHorizontal(newFollowX, RECT_WIDTH)) {
+//            newFollowX = followRectX;
+//        }
+//        if (isWallCollisionVertical(newFollowY, RECT_HEIGHT)) {
+//            newFollowY = followRectY;
+//        }
+
+        followRectX = newFollowX;
+        followRectY = newFollowY;
 
         // Check for collision
         if (checkRectangleCollision()) {
