@@ -8,7 +8,8 @@ import java.awt.*;
 public class StartScreen extends JPanel {
     public StartScreen(JFrame frame){
         this.setLayout(new BorderLayout());
-        JLabel welcomeLabel = new JLabel("Welcome! Click 'Start' to Begin", SwingConstants.CENTER);
+        JLabel welcomeLabel = new JLabel("<html>Welcome! Click 'Start' to Begin" +
+                "<br>To play use W, A, S, D keys or The Arrow Keys</html>", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
         this.add(welcomeLabel, BorderLayout.CENTER);
 
