@@ -184,24 +184,23 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER){
             boolean validPosition = false;
 
-            while (!validPosition) {
-                // Generate random position for the circle
+            do {
                 circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
                 circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
 
-                // Check if the circle is overlapping with the wall
-                if (!isCircleCollidingWithWall(circleX, circleY)){
-                    validPosition = true;
-                }
-            }
+                validPosition = !(isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT) ||
+                        isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT));
+            } while (!validPosition);
         }
     }
 
-    private boolean isCircleCollidingWithWall(int x, int y) {
-        return x < Wall_X + Wall_WIDTH &&
-                x + CIRCLE_DIAMETER > Wall_X &&
-                y < Wall_Y + Wall_HEIGHT &&
-                y + CIRCLE_DIAMETER > Wall_Y;
+    private boolean isCircleCollidingWithWall(int circleX, int circleY, int circleDiameter, int wallX, int wallY, int wallWidth, int wallHeight) {
+        int circleRight = circleX + circleDiameter;
+        int circleBottom = circleY + circleDiameter;
+        return circleX < wallX + wallWidth &&
+                circleRight > wallX &&
+                circleY < wallY + wallHeight &&
+                circleBottom > wallY;
     }
 
     private boolean checkCircleCollision(){
