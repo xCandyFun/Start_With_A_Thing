@@ -74,7 +74,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
 
             // Increase the hunter speed every 10 seconds
             if (elapsedTime % 10 == 0){
-                followSpeed += 0.7;
+                followSpeed += 1;
             }
 
             repaint(); // Repaint to update the displayed
@@ -88,32 +88,32 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         int newY = rectY;
 
         if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP)){
-            newY -= MOVE_DISTANCE;
-//            if (rectY > 0) {
-//                //rectY -= MOVE_DISTANCE;
-//                newY -= MOVE_DISTANCE;
-//            }
+            //newY -= MOVE_DISTANCE;
+            if (rectY > 0) {
+                //rectY -= MOVE_DISTANCE;
+                newY -= MOVE_DISTANCE;
+            }
         }
         if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN)) {
-            newY += MOVE_DISTANCE;
-//            if (rectY + RECT_HEIGHT < getHeight()) {
-//                //rectY += MOVE_DISTANCE;
-//                newY += MOVE_DISTANCE;
-//            }
+            //newY += MOVE_DISTANCE;
+            if (rectY + RECT_HEIGHT < getHeight()) {
+                //rectY += MOVE_DISTANCE;
+                newY += MOVE_DISTANCE;
+            }
         }
         if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT)){
-            newX -= MOVE_DISTANCE;
-//            if (rectX > 0) {
-//                //rectX -= MOVE_DISTANCE;
-//                newX -= MOVE_DISTANCE;
-//            }
+            //newX -= MOVE_DISTANCE;
+            if (rectX > 0) {
+                //rectX -= MOVE_DISTANCE;
+                newX -= MOVE_DISTANCE;
+            }
         }
         if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT)) {
-            newX += MOVE_DISTANCE;
-//            if (rectX + RECT_WIDTH < getWidth()) {
-//                //rectX += MOVE_DISTANCE;
-//                newX += MOVE_DISTANCE;
-//            }
+            //newX += MOVE_DISTANCE;
+            if (rectX + RECT_WIDTH < getWidth()) {
+                //rectX += MOVE_DISTANCE;
+                newX += MOVE_DISTANCE;
+            }
         }
 
         // Check collision with the wall
@@ -169,11 +169,28 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     }
 
     private void spawnNewCircle() {
-        // Generate random position for the circle within the panel
+        // Ensure the panel size is valid for circle placement
         if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER){
-            circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
-            circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
+            boolean validPosition = false;
+
+            while (!validPosition) {
+                // Generate random position for the circle
+                circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
+                circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
+
+                // Check if the circle is overlapping with the wall
+                if (!isCircleCollidingWithWall(circleX, circleY)){
+                    validPosition = true;
+                }
+            }
         }
+    }
+
+    private boolean isCircleCollidingWithWall(int x, int y) {
+        return x < Wall_X + Wall_WIDTH &&
+                x + CIRCLE_DIAMETER > Wall_X &&
+                y < Wall_Y + Wall_HEIGHT &&
+                y + CIRCLE_DIAMETER > Wall_Y;
     }
 
     private boolean checkCircleCollision(){
