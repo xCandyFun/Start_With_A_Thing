@@ -1,6 +1,8 @@
 package org.example.MoveRectangle;
 
 import org.example.TheGame.GameRenderer;
+import org.example.TheGame.HighScoreEntry;
+import org.example.TheGame.HighScoreTable;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -13,6 +15,8 @@ import java.util.Set;
 public class MovingRectanglePanel extends JPanel implements KeyListener {
 
     private final GameRenderer renderer = new GameRenderer();
+    private final HighScoreTable highScoreTable = new HighScoreTable("highscores.txt");
+
 
     // Main rectangle start position
     private int rectX = 280;
@@ -255,8 +259,21 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
         moveTimer.stop();
         followTimer.stop();
         clockTimer.stop();
-        JOptionPane.showMessageDialog(this, "Game Over! The hunter caught you.");
+        String playerName = JOptionPane.showInputDialog(this, "Game over! Enter your name");
+        if (playerName != null && !playerName.trim().isEmpty()){
+            highScoreTable.addHighScore(playerName, score);
+        }
+
+        showHighScores();
         System.exit(0);
+    }
+
+    private void showHighScores() {
+        StringBuilder sb = new StringBuilder("High Scores:\n");
+        for (HighScoreEntry entry : highScoreTable.getHighScores()) {
+            sb.append(entry.getName()).append(": ").append(entry.getScore()).append("\n");
+        }
+        JOptionPane.showMessageDialog(this, sb.toString());
     }
 
     @Override
