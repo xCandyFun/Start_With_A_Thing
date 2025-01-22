@@ -22,6 +22,9 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private int rectX = 280;
     private int rectY = 330;
 
+    private int startPositionX = rectX;
+    private int startPositionY = rectY;
+
     // Main rectangle size
     private final int RECT_WIDTH = 30;
     private final int RECT_HEIGHT = 30;
@@ -33,8 +36,13 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private int followRectX = 30;
     private int followRectY = 50;
 
+    private int startFollowPositionX = followRectX;
+    private int startFollowPositionY = followRectY;
+
     // The following rectangle start speed
     private double followSpeed = 1;
+
+    private double startFollowSpeed = followSpeed;
 
     private final int CIRCLE_DIAMETER = 20;
     private int circleX, circleY;
@@ -265,7 +273,23 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         }
 
         showHighScores();
-        System.exit(0);
+
+        int option = JOptionPane.showOptionDialog(
+                this,
+                "Would you like to try again?",
+                "Game Over",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"Yes", "No"},
+                "Yes"
+        );
+
+        if (option == JOptionPane.YES_OPTION) {
+            restartGame();
+        }else {
+            System.exit(0);
+        }
     }
 
     private void showHighScores() {
@@ -279,6 +303,31 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
                     .append("s\n");
         }
         JOptionPane.showMessageDialog(this, sb.toString());
+    }
+
+    private void restartGame() {
+        // Clear the active keys to stop any ongoing movement
+        activeKey.clear();
+
+        // Reset game variables
+        score = 0;
+        elapsedTime = 0;
+        rectX = startPositionX;
+        rectY = startPositionY;
+        followRectX = startFollowPositionX;
+        followRectY = startFollowPositionY;
+        followSpeed = startFollowSpeed;
+
+        // Spawn a new circle
+        spawnNewCircle();
+
+        // Restart timers
+        moveTimer.start();
+        followTimer.start();
+        clockTimer.start();
+
+        // Repaint the screen
+        repaint();
     }
 
     @Override
