@@ -1,10 +1,10 @@
-package org.example.MoveRectangle;
+package org.example.TheMainGame;
 
 import org.example.StartScreen;
 
 import javax.swing.*;
 
-public class MoveARectangle {
+public class TheGameWindow {
 
     public void rectangleOnMove(){
         // Create the Main frame

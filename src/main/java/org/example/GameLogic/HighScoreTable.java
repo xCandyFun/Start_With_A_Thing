@@ -1,4 +1,4 @@
-package org.example.TheGame;
+package org.example.GameLogic;
 
 import java.io.*;
 import java.util.ArrayList;

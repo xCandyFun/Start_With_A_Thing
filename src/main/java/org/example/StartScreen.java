@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.MoveRectangle.MovingRectanglePanel;
+import org.example.TheMainGame.TheMainGameLogic;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class StartScreen extends JPanel {
         // Action Listener for the start button
         startButton.addActionListener(e-> {
             frame.getContentPane().removeAll();
-            MovingRectanglePanel panel = new MovingRectanglePanel();
+            TheMainGameLogic panel = new TheMainGameLogic();
 
             frame.add(panel);
             frame.revalidate();

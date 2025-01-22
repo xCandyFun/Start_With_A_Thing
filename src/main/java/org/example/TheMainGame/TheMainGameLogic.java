@@ -1,8 +1,8 @@
-package org.example.MoveRectangle;
+package org.example.TheMainGame;
 
-import org.example.TheGame.GameRenderer;
-import org.example.TheGame.HighScoreEntry;
-import org.example.TheGame.HighScoreTable;
+import org.example.GameLogic.GameRenderer;
+import org.example.GameLogic.HighScoreEntry;
+import org.example.GameLogic.HighScoreTable;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class MovingRectanglePanel extends JPanel implements KeyListener {
+public class TheMainGameLogic extends JPanel implements KeyListener {
 
     private final GameRenderer renderer = new GameRenderer();
     private final HighScoreTable highScoreTable = new HighScoreTable("highscores.txt");
@@ -60,7 +60,7 @@ public class MovingRectanglePanel extends JPanel implements KeyListener {
     private int elapsedTime = 0;
     private final Random random = new Random();
 
-    public MovingRectanglePanel(){
+    public TheMainGameLogic(){
         // Add the KeyListener to the panel
         this.addKeyListener(this);
         this.setFocusable(true); // Ensure the panel can receive focus
