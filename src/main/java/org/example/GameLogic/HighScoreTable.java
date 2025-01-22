@@ -15,8 +15,8 @@ public class HighScoreTable {
         loadHighScores();
     }
 
-    public void addHighScore(String playerName, int score){
-        highScores.add(new HighScoreEntry(playerName, score));
+    public void addHighScore(String playerName, int score, int elapsedTime){
+        highScores.add(new HighScoreEntry(playerName, score, elapsedTime));
         highScores.sort((a,b) -> Integer.compare(b.getScore(), a.getScore()));
         if (highScores.size() > 10) {
             highScores.removeLast();
@@ -31,7 +31,7 @@ public class HighScoreTable {
     private void saveHighScores() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (HighScoreEntry entry : highScores){
-                writer.println(entry.getName() + "," + entry.getScore());
+                writer.println(entry.getName() + "," + entry.getScore() + "," + entry.getElapsedTime());
             }
         }catch (IOException e) {
             e.printStackTrace();
@@ -46,8 +46,8 @@ public class HighScoreTable {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    highScores.add(new HighScoreEntry(parts[0], Integer.parseInt(parts[1])));
+                if (parts.length == 3) {
+                    highScores.add(new HighScoreEntry(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2])));
                 }
             }
         }catch (IOException e) {

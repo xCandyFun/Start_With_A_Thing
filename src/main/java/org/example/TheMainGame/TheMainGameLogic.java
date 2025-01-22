@@ -261,7 +261,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         clockTimer.stop();
         String playerName = JOptionPane.showInputDialog(this, "Game over! Enter your name");
         if (playerName != null && !playerName.trim().isEmpty()){
-            highScoreTable.addHighScore(playerName, score);
+            highScoreTable.addHighScore(playerName, score, elapsedTime);
         }
 
         showHighScores();
@@ -271,7 +271,12 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private void showHighScores() {
         StringBuilder sb = new StringBuilder("High Scores:\n");
         for (HighScoreEntry entry : highScoreTable.getHighScores()) {
-            sb.append(entry.getName()).append(": ").append(entry.getScore()).append("\n");
+            sb.append(entry.getName())
+                    .append(": Score ")
+                    .append(entry.getScore())
+                    .append(", Time ")
+                    .append(entry.getElapsedTime())
+                    .append("s\n");
         }
         JOptionPane.showMessageDialog(this, sb.toString());
     }
