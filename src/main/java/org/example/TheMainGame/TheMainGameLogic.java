@@ -3,11 +3,14 @@ package org.example.TheMainGame;
 import org.example.GameLogic.GameRenderer;
 import org.example.GameLogic.HighScoreEntry;
 import org.example.GameLogic.HighScoreTable;
+import org.example.GameLogic.Wall;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -48,42 +51,42 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private int circleX, circleY;
     private int score = 0;
 
-    // Wall properties
-    private final int Wall_X = 150;
-    private final int Wall_Y = 150;
-    private final int Wall_WIDTH = 400;
-    private final int Wall_HEIGHT = 20;
-
-    // Second wall properties
-    private final int Wall2_X = 270;
-    private final int Wall2_Y = 220;
-    private final int Wall2_WIDTH = 20;
-    private final int Wall2_HEIGHT = 140;
-
-    private final int Wall3_X = 230;
-    private final int Wall3_Y = 410;
-    private final int Wall3_WIDTH = 200;
-    private final int Wall3_HEIGHT = 20;
-
-    private final int Wall4_X = 120;
-    private final int Wall4_Y = 250;
-    private final int Wall4_WIDTH = 20;
-    private final int Wall4_HEIGHT = 240;
-
-    private final int Wall5_X = 500;
-    private final int Wall5_Y = 220;
-    private final int Wall5_WIDTH = 20;
-    private final int Wall5_HEIGHT = 380;
-
-    private final int Wall6_X = 600;
-    private final int Wall6_Y = 220;
-    private final int Wall6_WIDTH = 300;
-    private final int Wall6_HEIGHT = 20;
-
-    private final int Wall7_X = 750;
-    private final int Wall7_Y = 320;
-    private final int Wall7_WIDTH = 20;
-    private final int Wall7_HEIGHT = 350;
+//    // Wall properties
+//    private final int Wall_X = 150;
+//    private final int Wall_Y = 150;
+//    private final int Wall_WIDTH = 400;
+//    private final int Wall_HEIGHT = 20;
+//
+//    // Second wall properties
+//    private final int Wall2_X = 270;
+//    private final int Wall2_Y = 220;
+//    private final int Wall2_WIDTH = 20;
+//    private final int Wall2_HEIGHT = 140;
+//
+//    private final int Wall3_X = 230;
+//    private final int Wall3_Y = 410;
+//    private final int Wall3_WIDTH = 200;
+//    private final int Wall3_HEIGHT = 20;
+//
+//    private final int Wall4_X = 120;
+//    private final int Wall4_Y = 250;
+//    private final int Wall4_WIDTH = 20;
+//    private final int Wall4_HEIGHT = 240;
+//
+//    private final int Wall5_X = 500;
+//    private final int Wall5_Y = 220;
+//    private final int Wall5_WIDTH = 20;
+//    private final int Wall5_HEIGHT = 380;
+//
+//    private final int Wall6_X = 600;
+//    private final int Wall6_Y = 220;
+//    private final int Wall6_WIDTH = 300;
+//    private final int Wall6_HEIGHT = 20;
+//
+//    private final int Wall7_X = 750;
+//    private final int Wall7_Y = 320;
+//    private final int Wall7_WIDTH = 20;
+//    private final int Wall7_HEIGHT = 350;
 
 
 
@@ -95,11 +98,21 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private int elapsedTime = 0;
     private final Random random = new Random();
 
+    private final List<Wall> walls = new ArrayList<>();
+
     public TheMainGameLogic(){
         // Add the KeyListener to the panel
         this.addKeyListener(this);
         this.setFocusable(true); // Ensure the panel can receive focus
         this.requestFocusInWindow();
+
+        walls.add(new Wall(150,150,400,20));
+        walls.add(new Wall(270,220,20,140));
+        walls.add(new Wall(230,410,200,20));
+        walls.add(new Wall(120,250,20,240));
+        walls.add(new Wall(500,220,20,380));
+        walls.add(new Wall(600,220,300,20));
+        walls.add(new Wall(750,320,20,350));
 
         // Add a ComponentListener to ensure the panel is ready before spawning the circle
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -185,36 +198,54 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         repaint();
     }
 
-    private boolean checkWallCollision(int nextX, int nextY, int rectWidth, int rectHeight){
-        return (isWallCollision(Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT, nextX, nextY, rectWidth, rectHeight));
-    }
+//    private boolean checkWallCollision(int nextX, int nextY, int rectWidth, int rectHeight){
+//        return (isWallCollision(Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+//                isWallCollision(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+//                isWallCollision(Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+//                isWallCollision(Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+//                isWallCollision(Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+//                isWallCollision(Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+//                isWallCollision(Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT, nextX, nextY, rectWidth, rectHeight));
+//    }
 
-    private boolean isWallCollision(int wallX, int wallY, int wallWidth, int wallHeight, int rectX, int rectY, int rectWidth, int rectHeight) {
-        return rectX < wallX + wallWidth &&
-                rectX + rectWidth > wallX &&
-                rectY < wallY + wallHeight &&
-                rectY + rectHeight > wallY;
-    }
+//    private boolean isWallCollision(int wallX, int wallY, int wallWidth, int wallHeight, int rectX, int rectY, int rectWidth, int rectHeight) {
+//        return rectX < wallX + wallWidth &&
+//                rectX + rectWidth > wallX &&
+//                rectY < wallY + wallHeight &&
+//                rectY + rectHeight > wallY;
+//    }
 
     private void spawnNewCircle() {
         // Ensure the panel size is valid for circle placement
-        if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER){
-            boolean validPosition = false;
+//        if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER){
+//            boolean validPosition = false;
+//
+//            do {
+//                circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
+//                circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
+//
+//                validPosition = !(isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT) ||
+//                        isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT));
+//            } while (!validPosition);
+//        }
+        boolean isInWall;
 
-            do {
+        do {
+            // Generate random position for the circle within the panel
+            if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER) {
                 circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
                 circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
+            }
 
-                validPosition = !(isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT) ||
-                        isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT));
-            } while (!validPosition);
-        }
+            // Check if the circle collides with any wall
+            isInWall = false;
+            for (Wall wall : walls) {
+                if (wall.collidesWith(circleX, circleY, CIRCLE_DIAMETER, CIRCLE_DIAMETER)){
+                    isInWall = true;
+                    break;
+                }
+            }
+        } while (isInWall);
     }
 
     private boolean isCircleCollidingWithWall(int circleX, int circleY, int circleDiameter, int wallX, int wallY, int wallWidth, int wallHeight) {
@@ -371,13 +402,14 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         renderer.drawMainRectangle(g, rectX, rectY, RECT_WIDTH, RECT_HEIGHT);
         renderer.drawFollowingRectangle(g, followRectX, followRectY, RECT_WIDTH, RECT_HEIGHT);
         renderer.drawCircle(g, circleX, circleY, CIRCLE_DIAMETER);
-        renderer.drawWall(g, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT);
-        renderer.drawWall(g, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT);
-        renderer.drawWall(g, Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT);
-        renderer.drawWall(g, Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT);
-        renderer.drawWall(g, Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT);
-        renderer.drawWall(g, Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT);
-        renderer.drawWall(g, Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT);
+        renderer.drawWall(g, walls);
+//        renderer.drawWall(g, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT);
+//        renderer.drawWall(g, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT);
+//        renderer.drawWall(g, Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT);
+//        renderer.drawWall(g, Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT);
+//        renderer.drawWall(g, Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT);
+//        renderer.drawWall(g, Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT);
+//        renderer.drawWall(g, Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT);
         renderer.drawText(g, elapsedTime, followSpeed, score);
 
     }

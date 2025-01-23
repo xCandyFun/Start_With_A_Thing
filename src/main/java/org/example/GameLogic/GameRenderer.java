@@ -1,6 +1,7 @@
 package org.example.GameLogic;
 
 import java.awt.*;
+import java.util.List;
 
 public class GameRenderer {
 
@@ -19,10 +20,14 @@ public class GameRenderer {
         g.fillOval(x, y, diameter, diameter);
     }
 
-    public void drawWall(Graphics g, int x, int y, int width, int height) {
-        g.setColor(Color.BLACK);
-        g.fillRect(x, y, width, height);
+    public void drawWall(Graphics g, List<Wall> walls) {
+        //Draw all walls
+        for (Wall wall : walls) {
+            wall.draw(g);
+        }
     }
+
+
 
     public void drawText(Graphics g, int elapsedTime, double followSpeed, int score) {
         g.setColor(Color.BLACK);
