@@ -240,7 +240,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
             spawnNewCircle();
 
             // Decrease the hunter's speed by 0.1, but ensure it doesn't go below a minimum threshold (e.g., 0.5)
-            followSpeed = Math.max(0.5, followSpeed - 0.1);
+            followSpeed = Math.max(0.5, followSpeed - 0.3);
         }
         return isColliding;
     }
