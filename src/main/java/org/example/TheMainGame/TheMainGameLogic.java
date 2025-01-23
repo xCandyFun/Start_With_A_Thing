@@ -51,14 +51,41 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     // Wall properties
     private final int Wall_X = 150;
     private final int Wall_Y = 150;
-    private final int Wall_WIDTH = 100;
+    private final int Wall_WIDTH = 400;
     private final int Wall_HEIGHT = 20;
 
     // Second wall properties
     private final int Wall2_X = 270;
     private final int Wall2_Y = 220;
     private final int Wall2_WIDTH = 20;
-    private final int Wall2_HEIGHT = 100;
+    private final int Wall2_HEIGHT = 140;
+
+    private final int Wall3_X = 230;
+    private final int Wall3_Y = 410;
+    private final int Wall3_WIDTH = 200;
+    private final int Wall3_HEIGHT = 20;
+
+    private final int Wall4_X = 120;
+    private final int Wall4_Y = 250;
+    private final int Wall4_WIDTH = 20;
+    private final int Wall4_HEIGHT = 240;
+
+    private final int Wall5_X = 500;
+    private final int Wall5_Y = 220;
+    private final int Wall5_WIDTH = 20;
+    private final int Wall5_HEIGHT = 380;
+
+    private final int Wall6_X = 600;
+    private final int Wall6_Y = 220;
+    private final int Wall6_WIDTH = 300;
+    private final int Wall6_HEIGHT = 20;
+
+    private final int Wall7_X = 750;
+    private final int Wall7_Y = 320;
+    private final int Wall7_WIDTH = 20;
+    private final int Wall7_HEIGHT = 350;
+
+
 
     private final Set<Integer> activeKey = new HashSet<>();
     private Timer moveTimer;
@@ -160,7 +187,12 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
     private boolean checkWallCollision(int nextX, int nextY, int rectWidth, int rectHeight){
         return (isWallCollision(Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-                isWallCollision(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT, nextX, nextY, rectWidth, rectHeight));
+                isWallCollision(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+                isWallCollision(Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+                isWallCollision(Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+                isWallCollision(Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+                isWallCollision(Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
+                isWallCollision(Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT, nextX, nextY, rectWidth, rectHeight));
     }
 
     private boolean isWallCollision(int wallX, int wallY, int wallWidth, int wallHeight, int rectX, int rectY, int rectWidth, int rectHeight) {
@@ -205,7 +237,6 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         boolean isColliding = distance < (CIRCLE_DIAMETER / 2 + Math.min(RECT_WIDTH, RECT_HEIGHT) / 2);
 
         if (isColliding) {
-            //score++;
             spawnNewCircle();
 
             // Decrease the hunter's speed by 0.1, but ensure it doesn't go below a minimum threshold (e.g., 0.5)
@@ -342,6 +373,11 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         renderer.drawCircle(g, circleX, circleY, CIRCLE_DIAMETER);
         renderer.drawWall(g, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT);
         renderer.drawWall(g, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT);
+        renderer.drawWall(g, Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT);
+        renderer.drawWall(g, Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT);
+        renderer.drawWall(g, Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT);
+        renderer.drawWall(g, Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT);
+        renderer.drawWall(g, Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT);
         renderer.drawText(g, elapsedTime, followSpeed, score);
 
     }
