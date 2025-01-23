@@ -10,7 +10,10 @@ public class TheGameWindow {
         // Create the Main frame
         JFrame frame = new JFrame("Move Rectangle");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400,400);
+        frame.setSize(1000,800);
+
+        frame.setLocationRelativeTo(null);
+        //frame.setSize(400,400);
 
         // Show the start screen
         StartScreen startScreen = new StartScreen(frame);
