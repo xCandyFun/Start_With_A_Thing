@@ -44,7 +44,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
     private double startFollowSpeed = followSpeed;
 
-    private final int CIRCLE_DIAMETER = 20;
+    private final int CIRCLE_DIAMETER = 30;
     private int circleX, circleY;
     private int score = 0;
 
