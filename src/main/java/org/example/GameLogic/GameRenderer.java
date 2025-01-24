@@ -5,16 +5,6 @@ import java.util.List;
 
 public class GameRenderer {
 
-    public void drawMainRectangle(Graphics g, int x, int y, int width, int height) {
-        g.setColor(Color.BLUE);
-        g.fillRect(x, y, width, height);
-    }
-
-    public void drawFollowingRectangle(Graphics g, int x, int y, int width, int height) {
-        g.setColor(Color.RED);
-        g.fillRect(x, y, width, height);
-    }
-
     public void drawCircle(Graphics g, int x, int y, int diameter) {
         g.setColor(Color.GREEN);
         g.fillOval(x, y, diameter, diameter);
