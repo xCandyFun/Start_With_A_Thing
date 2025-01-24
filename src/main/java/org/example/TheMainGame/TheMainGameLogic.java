@@ -4,6 +4,7 @@ import org.example.GameLogic.GameRenderer;
 import org.example.GameLogic.HighScoreEntry;
 import org.example.GameLogic.HighScoreTable;
 import org.example.GameLogic.Wall;
+import org.example.RectangleEntity;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -19,10 +20,12 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
     private final GameRenderer renderer = new GameRenderer();
     private final HighScoreTable highScoreTable = new HighScoreTable("highscores.txt");
+    private RectangleEntity playerRectangle;
+    private RectangleEntity hunterRectangle;
 
 
     // Main rectangle start position
-    private int rectX = 280;
+    private int rectX = 330;
     private int rectY = 330;
 
     private int startPositionX = rectX;
@@ -51,45 +54,6 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private int circleX, circleY;
     private int score = 0;
 
-//    // Wall properties
-//    private final int Wall_X = 150;
-//    private final int Wall_Y = 150;
-//    private final int Wall_WIDTH = 400;
-//    private final int Wall_HEIGHT = 20;
-//
-//    // Second wall properties
-//    private final int Wall2_X = 270;
-//    private final int Wall2_Y = 220;
-//    private final int Wall2_WIDTH = 20;
-//    private final int Wall2_HEIGHT = 140;
-//
-//    private final int Wall3_X = 230;
-//    private final int Wall3_Y = 410;
-//    private final int Wall3_WIDTH = 200;
-//    private final int Wall3_HEIGHT = 20;
-//
-//    private final int Wall4_X = 120;
-//    private final int Wall4_Y = 250;
-//    private final int Wall4_WIDTH = 20;
-//    private final int Wall4_HEIGHT = 240;
-//
-//    private final int Wall5_X = 500;
-//    private final int Wall5_Y = 220;
-//    private final int Wall5_WIDTH = 20;
-//    private final int Wall5_HEIGHT = 380;
-//
-//    private final int Wall6_X = 600;
-//    private final int Wall6_Y = 220;
-//    private final int Wall6_WIDTH = 300;
-//    private final int Wall6_HEIGHT = 20;
-//
-//    private final int Wall7_X = 750;
-//    private final int Wall7_Y = 320;
-//    private final int Wall7_WIDTH = 20;
-//    private final int Wall7_HEIGHT = 350;
-
-
-
     private final Set<Integer> activeKey = new HashSet<>();
     private Timer moveTimer;
     private Timer followTimer;
@@ -105,6 +69,9 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         this.addKeyListener(this);
         this.setFocusable(true); // Ensure the panel can receive focus
         this.requestFocusInWindow();
+
+        playerRectangle = new RectangleEntity(RECT_WIDTH,RECT_HEIGHT, startPositionY, startPositionX, Color.BLUE);
+        hunterRectangle = new RectangleEntity(RECT_WIDTH, RECT_HEIGHT, startFollowPositionY, startFollowPositionX, Color.RED);
 
         walls.add(new Wall(150,150,400,20));
         walls.add(new Wall(270,220,20,140));
@@ -146,47 +113,54 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
     //Update the position of the main rectangle based on active keys
     private void updatePosition(){
-        int newX = rectX;
-        int newY = rectY;
+
+        int newX = playerRectangle.getX();
+        int newY = playerRectangle.getY();
+
 
         if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP)){
-            if (rectY > 0) {
+            if (newY > 0) {
                 newY -= MOVE_DISTANCE;
             }
         }
         if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN)) {
-            if (rectY + RECT_HEIGHT < getHeight()) {
+            if (newY + playerRectangle.getHeight() < getHeight()) {
                 newY += MOVE_DISTANCE;
             }
         }
         if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT)){
-            if (rectX > 0) {
+            if (newX > 0) {
                 newX -= MOVE_DISTANCE;
             }
         }
         if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT)) {
-            if (rectX + RECT_WIDTH < getWidth()) {
+            if (newX + playerRectangle.getWidth() < getWidth()) {
                 newX += MOVE_DISTANCE;
             }
         }
 
+        boolean collidesHorizontally = false;
+        boolean collidesVertically = false;
+        //boolean canMoveHorizontally = true;
+        //boolean canMoveVertically = true;
 
-        // Check collision with the wall
-        if (!checkWallCollision(newX, newY, RECT_WIDTH, RECT_HEIGHT)) {
-            rectX = newX;
-            rectY = newY;
+        // Check wall collisions
+        for (Wall wall : walls) {
+            if (wall.collidesHorizontally(newX, playerRectangle.getY(), playerRectangle.getWidth(), playerRectangle.getHeight())) {
+                collidesHorizontally = true;
+            }
+            if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
+                collidesVertically = true;
+            }
         }
-        if (checkWallCollision(newX, rectY, RECT_WIDTH, RECT_HEIGHT)) {
-            newX = rectX;
+
+        // Update position if no collision
+        if (!collidesHorizontally) {
+            playerRectangle.setX(newX);
         }
-        if (checkWallCollision(rectX, newY, RECT_WIDTH, RECT_HEIGHT)) {
-            newY = rectY;
+        if (!collidesVertically) {
+            playerRectangle.setY(newY);
         }
-
-
-        rectX = newX;
-        rectY = newY;
-
 
         // Check for circle collision
         if (checkCircleCollision()) {
@@ -194,40 +168,11 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
             spawnNewCircle();
         }
 
-
         repaint();
     }
 
-//    private boolean checkWallCollision(int nextX, int nextY, int rectWidth, int rectHeight){
-//        return (isWallCollision(Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-//                isWallCollision(Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-//                isWallCollision(Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-//                isWallCollision(Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-//                isWallCollision(Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-//                isWallCollision(Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT, nextX, nextY, rectWidth, rectHeight) ||
-//                isWallCollision(Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT, nextX, nextY, rectWidth, rectHeight));
-//    }
-
-//    private boolean isWallCollision(int wallX, int wallY, int wallWidth, int wallHeight, int rectX, int rectY, int rectWidth, int rectHeight) {
-//        return rectX < wallX + wallWidth &&
-//                rectX + rectWidth > wallX &&
-//                rectY < wallY + wallHeight &&
-//                rectY + rectHeight > wallY;
-//    }
-
     private void spawnNewCircle() {
-        // Ensure the panel size is valid for circle placement
-//        if (getWidth() > CIRCLE_DIAMETER && getHeight() > CIRCLE_DIAMETER){
-//            boolean validPosition = false;
-//
-//            do {
-//                circleX = random.nextInt(getWidth() - CIRCLE_DIAMETER);
-//                circleY = random.nextInt(getHeight() - CIRCLE_DIAMETER);
-//
-//                validPosition = !(isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT) ||
-//                        isCircleCollidingWithWall(circleX, circleY, CIRCLE_DIAMETER, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT));
-//            } while (!validPosition);
-//        }
+
         boolean isInWall;
 
         do {
@@ -248,24 +193,15 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         } while (isInWall);
     }
 
-    private boolean isCircleCollidingWithWall(int circleX, int circleY, int circleDiameter, int wallX, int wallY, int wallWidth, int wallHeight) {
-        int circleRight = circleX + circleDiameter;
-        int circleBottom = circleY + circleDiameter;
-        return circleX < wallX + wallWidth &&
-                circleRight > wallX &&
-                circleY < wallY + wallHeight &&
-                circleBottom > wallY;
-    }
-
     private boolean checkCircleCollision(){
         int circleCenterX = circleX + CIRCLE_DIAMETER / 2;
         int circleCenterY = circleY + CIRCLE_DIAMETER / 2;
 
-        int rectCenterX = rectX + CIRCLE_DIAMETER / 2;
-        int rectCenterY = rectY + CIRCLE_DIAMETER / 2;
+        int rectCenterX = playerRectangle.getX() + CIRCLE_DIAMETER / 2;
+        int rectCenterY = playerRectangle.getY() + CIRCLE_DIAMETER / 2;
 
         double distance = Math.sqrt(Math.pow(circleCenterX- rectCenterX, 2) + Math.pow(circleCenterY - rectCenterY, 2));
-        boolean isColliding = distance < (CIRCLE_DIAMETER / 2 + Math.min(RECT_WIDTH, RECT_HEIGHT) / 2);
+        boolean isColliding = distance < (CIRCLE_DIAMETER / 2 + Math.min(playerRectangle.getWidth(), playerRectangle.getHeight()) / 2);
 
         if (isColliding) {
             spawnNewCircle();
@@ -278,51 +214,54 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
     // Move the hunter rectangle towards the main rectangle
     private void moveFollowing() {
-        int newFollowX = followRectX;
-        int newFollowY = followRectY;
 
         // Calculate the difference
-        int dx = rectX - followRectX;
-        int dy = rectY - followRectY;
+        int dx = playerRectangle.getX() - hunterRectangle.getX();
+        int dy = playerRectangle.getY() - hunterRectangle.getY();
 
         // Normalize the direction and move the follow rectangle
         double distance = Math.sqrt(dx * dx + dy * dy);
 
+        int newX = hunterRectangle.getX();
+        int newY = hunterRectangle.getY();
+
         if (distance > 0) {
-            newFollowX += Math.round(followSpeed * (dx / distance));
-            newFollowY += Math.round(followSpeed * (dy / distance));
+            newX += (int) Math.round(followSpeed * (dx / distance));
+            newY += (int) Math.round(followSpeed * (dy / distance));
+
         }
 
-        //Check collision with the wall
-        if (!checkWallCollision(newFollowX, newFollowY, RECT_WIDTH, RECT_HEIGHT)) {
-            followRectX = newFollowX;
-            followRectY = newFollowY;
-        }
-        if (checkWallCollision(newFollowX, followRectY, RECT_WIDTH, RECT_HEIGHT)) {
-            newFollowX = followRectX;
-        }
-        if (checkWallCollision(followRectX, newFollowY, RECT_WIDTH, RECT_HEIGHT)) {
-            newFollowY = followRectY;
+        // Making wall slippery
+        boolean collidesHorizontally = false;
+        boolean collidesVertically = false;
+        //boolean canMovehorizontally = true;
+        //boolean canMovevertically = true;
+
+        // Check wall collisions
+        for (Wall wall : walls){
+            if (wall.collidesHorizontally(newX, hunterRectangle.getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())) {
+                collidesHorizontally = true;
+            }
+            if (wall.collidesVertically(hunterRectangle.getX(), newY, hunterRectangle.getWidth(), hunterRectangle.getHeight())) {
+                collidesVertically = true;
+            }
         }
 
+        //update position if no collision
+        if (!collidesHorizontally) {
+            hunterRectangle.setX(newX);
+        }
+        if (!collidesVertically) {
+            hunterRectangle.setY(newY);
+        }
 
-        followRectX = newFollowX;
-        followRectY = newFollowY;
-
-        // Check for collision
-        if (checkRectangleCollision()) {
+        // Check for collision for player
+        if (hunterRectangle.collidesWith(playerRectangle)) {
             endGame();
         }
 
         // Repaint the panel to update positions
         repaint();
-    }
-
-    private boolean checkRectangleCollision(){
-        return rectX < followRectX + RECT_WIDTH &&
-                rectX + RECT_WIDTH > followRectX &&
-                rectY < followRectY + RECT_HEIGHT &&
-                rectY + RECT_HEIGHT > followRectY;
     }
 
     private void endGame() {
@@ -399,17 +338,10 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         // Set the background color
         this.setBackground(Color.LIGHT_GRAY);
 
-        renderer.drawMainRectangle(g, rectX, rectY, RECT_WIDTH, RECT_HEIGHT);
-        renderer.drawFollowingRectangle(g, followRectX, followRectY, RECT_WIDTH, RECT_HEIGHT);
+        playerRectangle.draw(g);
+        hunterRectangle.draw(g);
         renderer.drawCircle(g, circleX, circleY, CIRCLE_DIAMETER);
         renderer.drawWall(g, walls);
-//        renderer.drawWall(g, Wall_X, Wall_Y, Wall_WIDTH, Wall_HEIGHT);
-//        renderer.drawWall(g, Wall2_X, Wall2_Y, Wall2_WIDTH, Wall2_HEIGHT);
-//        renderer.drawWall(g, Wall3_X, Wall3_Y, Wall3_WIDTH, Wall3_HEIGHT);
-//        renderer.drawWall(g, Wall4_X, Wall4_Y, Wall4_WIDTH, Wall4_HEIGHT);
-//        renderer.drawWall(g, Wall5_X, Wall5_Y, Wall5_WIDTH, Wall5_HEIGHT);
-//        renderer.drawWall(g, Wall6_X, Wall6_Y, Wall6_WIDTH, Wall6_HEIGHT);
-//        renderer.drawWall(g, Wall7_X, Wall7_Y, Wall7_WIDTH, Wall7_HEIGHT);
         renderer.drawText(g, elapsedTime, followSpeed, score);
 
     }

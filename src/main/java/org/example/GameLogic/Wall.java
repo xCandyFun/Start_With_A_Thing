@@ -36,6 +36,15 @@ public class Wall {
         return rectX < x + width && rectX + rectWidth > x && rectY < y + height && rectY + rectHeight > y;
     }
 
+    // Walls be slippery
+    public boolean collidesHorizontally(int nextX, int currentY, int rectWidth, int rectHeight) {
+        return nextX < x + width && nextX + rectWidth > x && currentY < y + height && currentY + rectHeight > y;
+    }
+
+    public boolean collidesVertically(int currentX, int nextY, int rectWidth, int rectHeight) {
+        return currentX < x + width && currentX + rectWidth > x && nextY < y + height && nextY + rectHeight > y;
+    }
+
     // Draw the Walls
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
