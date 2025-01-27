@@ -73,6 +73,10 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         playerRectangle = new RectangleEntity(RECT_WIDTH,RECT_HEIGHT, startPositionY, startPositionX, Color.BLUE);
         hunterRectangle = new RectangleEntity(RECT_WIDTH, RECT_HEIGHT, startFollowPositionY, startFollowPositionX, Color.RED);
 
+        // This wall is for testing the wall placement
+        // Is above the hunter so that the hunter can't move
+        //walls.add(new Wall(30, 50, 30, 30));
+
         walls.add(new Wall(150,150,400,20));
         walls.add(new Wall(270,220,20,140));
         walls.add(new Wall(230,410,200,20));
@@ -80,6 +84,15 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         walls.add(new Wall(500,220,20,380));
         walls.add(new Wall(600,220,300,20));
         walls.add(new Wall(750,320,20,350));
+        walls.add(new Wall(50,540, 210, 20));
+        walls.add(new Wall(350,485, 20, 200));
+        walls.add(new Wall(520,350, 150, 20));
+        walls.add(new Wall(600,550, 150, 20));
+        walls.add(new Wall(220,0,20,100));
+        walls.add(new Wall(420,50,20,100));
+        walls.add(new Wall(720,0,20,150));
+        walls.add(new Wall(838,450,150,20));
+
 
         // Add a ComponentListener to ensure the panel is ready before spawning the circle
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
