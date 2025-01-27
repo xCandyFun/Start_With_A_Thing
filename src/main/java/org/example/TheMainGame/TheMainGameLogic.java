@@ -3,8 +3,8 @@ package org.example.TheMainGame;
 import org.example.GameLogic.GameRenderer;
 import org.example.GameLogic.HighScoreEntry;
 import org.example.GameLogic.HighScoreTable;
-import org.example.entities.Wall;
-import org.example.entities.RectangleEntity;
+import org.example.Entities.Wall;
+import org.example.Entities.RectangleEntity;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -84,10 +84,10 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         walls.add(new Wall(500,220,20,380));
         walls.add(new Wall(600,220,300,20));
         walls.add(new Wall(750,320,20,350));
-        walls.add(new Wall(50,540, 210, 20));
-        walls.add(new Wall(350,485, 20, 200));
-        walls.add(new Wall(520,350, 150, 20));
-        walls.add(new Wall(600,550, 150, 20));
+        walls.add(new Wall(50,540,210,20));
+        walls.add(new Wall(350,485,20,200));
+        walls.add(new Wall(520,350,150,20));
+        walls.add(new Wall(600,550,150,20));
         walls.add(new Wall(220,0,20,100));
         walls.add(new Wall(420,50,20,100));
         walls.add(new Wall(720,0,20,150));
