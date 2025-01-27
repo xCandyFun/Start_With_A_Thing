@@ -1,4 +1,4 @@
-package org.example;
+package org.example.TheMainGame.Windows;
 
 import org.example.TheMainGame.TheMainGameLogic;
 

@@ -1,5 +1,7 @@
 package org.example.GameLogic;
 
+import org.example.entities.Wall;
+
 import java.awt.*;
 import java.util.List;
 

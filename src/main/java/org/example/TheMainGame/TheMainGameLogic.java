@@ -3,8 +3,8 @@ package org.example.TheMainGame;
 import org.example.GameLogic.GameRenderer;
 import org.example.GameLogic.HighScoreEntry;
 import org.example.GameLogic.HighScoreTable;
-import org.example.GameLogic.Wall;
-import org.example.RectangleEntity;
+import org.example.entities.Wall;
+import org.example.entities.RectangleEntity;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;

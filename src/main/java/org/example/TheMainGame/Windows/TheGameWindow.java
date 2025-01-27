@@ -1,6 +1,4 @@
-package org.example.TheMainGame;
-
-import org.example.StartScreen;
+package org.example.TheMainGame.Windows;
 
 import javax.swing.*;
 

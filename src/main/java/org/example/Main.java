@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.TheMainGame.TheGameWindow;
+import org.example.TheMainGame.Windows.TheGameWindow;
 
 public class Main {
 

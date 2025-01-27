@@ -1,4 +1,4 @@
-package org.example.GameLogic;
+package org.example.entities;
 
 import java.awt.*;
 
