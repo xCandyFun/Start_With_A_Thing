@@ -20,23 +20,22 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
     private final GameRenderer renderer = new GameRenderer();
     private final HighScoreTable highScoreTable = new HighScoreTable("highscores.txt");
-    private RectangleEntity playerRectangle;
-    private RectangleEntity hunterRectangle;
-
+    private final RectangleEntity playerRectangle;
+    private final RectangleEntity hunterRectangle;
 
     // Main rectangle start position
-    private int rectX = 330;
-    private int rectY = 330;
+    private int playerX = 330;
+    private int playerY = 330;
 
-    private int startPositionX = rectX;
-    private int startPositionY = rectY;
+    private final int startPositionX = playerX;
+    private final int startPositionY = playerY;
 
     // Main rectangle size
     private final int RECT_WIDTH = 30;
     private final int RECT_HEIGHT = 30;
 
     // Main rectangle movement speed
-    private final int MOVE_DISTANCE = 10;
+    private final int playerSpeed = 10;
 
     // The following rectangle start position
     private int followRectX = 30;
@@ -60,6 +59,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
     private Timer clockTimer;
 
     private int elapsedTime = 0;
+    private Timer wallMoveTimer;
     private final Random random = new Random();
 
     private final List<Wall> walls = new ArrayList<>();
@@ -93,6 +93,9 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         walls.add(new Wall(720,0,20,150));
         walls.add(new Wall(838,450,150,20));
 
+//        Wall dynamicWall = new Wall(400, 300, 100, 20);
+//        dynamicWall.setMovement(1,3,2);
+//        walls.add(dynamicWall);
 
         // Add a ComponentListener to ensure the panel is ready before spawning the circle
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -122,6 +125,15 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
             repaint(); // Repaint to update the displayed
         });
         clockTimer.start();
+
+        // Timer to move dynamic walls
+        wallMoveTimer = new Timer(20, e -> {
+            for (Wall wall : walls){
+                wall.move();
+            }
+            repaint();
+        });
+        wallMoveTimer.start();
     }
 
     //Update the position of the main rectangle based on active keys
@@ -133,29 +145,27 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
         if (activeKey.contains(KeyEvent.VK_W) || activeKey.contains(KeyEvent.VK_UP)){
             if (newY > 0) {
-                newY -= MOVE_DISTANCE;
+                newY -= playerSpeed;
             }
         }
         if (activeKey.contains(KeyEvent.VK_S) || activeKey.contains(KeyEvent.VK_DOWN)) {
             if (newY + playerRectangle.getHeight() < getHeight()) {
-                newY += MOVE_DISTANCE;
+                newY += playerSpeed;
             }
         }
         if (activeKey.contains(KeyEvent.VK_A) || activeKey.contains(KeyEvent.VK_LEFT)){
             if (newX > 0) {
-                newX -= MOVE_DISTANCE;
+                newX -= playerSpeed;
             }
         }
         if (activeKey.contains(KeyEvent.VK_D) || activeKey.contains(KeyEvent.VK_RIGHT)) {
             if (newX + playerRectangle.getWidth() < getWidth()) {
-                newX += MOVE_DISTANCE;
+                newX += playerSpeed;
             }
         }
 
         boolean collidesHorizontally = false;
         boolean collidesVertically = false;
-        //boolean canMoveHorizontally = true;
-        //boolean canMoveVertically = true;
 
         // Check wall collisions
         for (Wall wall : walls) {
@@ -165,6 +175,12 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
             if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
                 collidesVertically = true;
             }
+//            if (wall.collidesWithTest(newX, playerRectangle.getY(), playerRectangle.getWidth(), getHeight())){
+//                collidesHorizontally = true;
+//            }
+//            if (wall.collidesWithTest(playerRectangle.getX(), getY(), playerRectangle.getWidth(), playerRectangle.getHeight())){
+//                collidesVertically = true;
+//            }
         }
 
         // Update position if no collision
@@ -247,8 +263,6 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         // Making wall slippery
         boolean collidesHorizontally = false;
         boolean collidesVertically = false;
-        //boolean canMovehorizontally = true;
-        //boolean canMovevertically = true;
 
         // Check wall collisions
         for (Wall wall : walls){
@@ -258,6 +272,12 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
             if (wall.collidesVertically(hunterRectangle.getX(), newY, hunterRectangle.getWidth(), hunterRectangle.getHeight())) {
                 collidesVertically = true;
             }
+//            if (wall.collidesWithTest(newX, hunterRectangle.getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())){
+//                collidesHorizontally = true;
+//            }
+//            if (wall.collidesWithTest(hunterRectangle.getX(), getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())){
+//                collidesVertically = true;
+//            }
         }
 
         //update position if no collision
@@ -281,6 +301,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         moveTimer.stop();
         followTimer.stop();
         clockTimer.stop();
+        wallMoveTimer.stop();
         String playerName = JOptionPane.showInputDialog(this, "Game over! Enter your name");
         if (playerName != null && !playerName.trim().isEmpty()){
             highScoreTable.addHighScore(playerName, score, elapsedTime);
@@ -326,8 +347,8 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         // Reset game variables
         score = 0;
         elapsedTime = 0;
-        rectX = startPositionX;
-        rectY = startPositionY;
+        playerX = startPositionX;
+        playerY = startPositionY;
         followRectX = startFollowPositionX;
         followRectY = startFollowPositionY;
         followSpeed = startFollowSpeed;

@@ -3,16 +3,18 @@ package org.example.Entities;
 import java.awt.*;
 
 public class Wall {
-    private final int x;
-    private final int y;
-    private final int width;
-    private final int height;
+    private int x, y, width, height;
+    private int dx, dy;
+    private int speed;
 
     public Wall(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.dx = 0;
+        this.dy = 0;
+        this.speed = 0;
     }
 
     public int getX() {
@@ -43,6 +45,35 @@ public class Wall {
 
     public boolean collidesVertically(int currentX, int nextY, int rectWidth, int rectHeight) {
         return currentX < x + width && currentX + rectWidth > x && nextY < y + height && nextY + rectHeight > y;
+    }
+
+    public void setMovement(int dx, int dy, int speed) {
+        this.dx = dx;
+        this.dy = dy;
+        this.speed = speed;
+    }
+
+    public void move() {
+        x += dx * speed;
+        y += dy * speed;
+
+        // Optional: keep walls within game bounds (bounce off edges)
+        if (x < 0 || x + width < 1000) {
+            dx *= -1;
+        }
+        if (y < 0 || y + height > 800) {
+            dy *= -1;
+        }
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+
+    public boolean collidesWithTest(int px,int py, int pWidth, int pHeight) {
+        Rectangle wallBounds = getBounds();
+        Rectangle playerBounds = new Rectangle(px, py, pWidth, pHeight);
+        return wallBounds.intersects(playerBounds);
     }
 
     // Draw the Walls
