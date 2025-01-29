@@ -5,6 +5,7 @@ import java.awt.*;
 public class Wall {
     private int x, y, width, height;
     private int dx, dy;
+    private int minX, maxX, minY, maxY;
     private int speed;
 
     public Wall(int x, int y, int width, int height) {
@@ -15,6 +16,11 @@ public class Wall {
         this.dx = 0;
         this.dy = 0;
         this.speed = 0;
+
+        this.minX = x;
+        this.maxX = x;
+        this.minY = y;
+        this.maxY = y;
     }
 
     public int getX() {
@@ -34,8 +40,13 @@ public class Wall {
     }
 
     //Check if a rectangle collides with walls
+//    public boolean collidesWith(int rectX, int rectY, int rectWidth, int rectHeight) {
+//        return rectX < x + width && rectX + rectWidth > x && rectY < y + height && rectY + rectHeight > y;
+//    }
+
     public boolean collidesWith(int rectX, int rectY, int rectWidth, int rectHeight) {
-        return rectX < x + width && rectX + rectWidth > x && rectY < y + height && rectY + rectHeight > y;
+        Rectangle playerBounds = new Rectangle(rectX, rectY, rectWidth, rectHeight);
+        return this.getBounds().intersects(playerBounds);
     }
 
     // Walls be slippery
@@ -47,10 +58,15 @@ public class Wall {
         return currentX < x + width && currentX + rectWidth > x && nextY < y + height && nextY + rectHeight > y;
     }
 
-    public void setMovement(int dx, int dy, int speed) {
+    public void setMovement(int dx, int dy, int speed, int minX, int maxX, int minY, int maxY) {
         this.dx = dx;
         this.dy = dy;
         this.speed = speed;
+
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
     }
 
     public void move() {
@@ -58,10 +74,16 @@ public class Wall {
         y += dy * speed;
 
         // Optional: keep walls within game bounds (bounce off edges)
-        if (x < 0 || x + width < 1000) {
+//        if (x < 0 || x + width > 1000) {
+//            dx *= -1;
+//        }
+//        if (y < 0 || y + height > 800) {
+//            dy *= -1;
+//        }
+        if (x <= minX || x + width >= maxX) {
             dx *= -1;
         }
-        if (y < 0 || y + height > 800) {
+        if (y <= minY || y + height >= maxY) {
             dy *= -1;
         }
     }
@@ -74,6 +96,10 @@ public class Wall {
         Rectangle wallBounds = getBounds();
         Rectangle playerBounds = new Rectangle(px, py, pWidth, pHeight);
         return wallBounds.intersects(playerBounds);
+    }
+
+    public boolean isMoving() {
+        return dx != 0 || dy != 0; // If dx or dy is not zero, the wall moves
     }
 
     // Draw the Walls

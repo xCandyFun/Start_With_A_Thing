@@ -75,7 +75,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
         // This wall is for testing the wall placement
         // Is above the hunter so that the hunter can't move
-        //walls.add(new Wall(30, 50, 30, 30));
+        walls.add(new Wall(30, 50, 30, 30));
 
         walls.add(new Wall(150,150,400,20));
         walls.add(new Wall(270,220,20,140));
@@ -93,9 +93,9 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         walls.add(new Wall(720,0,20,150));
         walls.add(new Wall(838,450,150,20));
 
-//        Wall dynamicWall = new Wall(400, 300, 100, 20);
-//        dynamicWall.setMovement(1,3,2);
-//        walls.add(dynamicWall);
+        Wall dynamicWall = new Wall(400, 300, 100, 20);
+        dynamicWall.setMovement(0,6,1, 200,200, 150,420);
+        walls.add(dynamicWall);
 
         // Add a ComponentListener to ensure the panel is ready before spawning the circle
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -169,18 +169,31 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
 
         // Check wall collisions
         for (Wall wall : walls) {
-            if (wall.collidesHorizontally(newX, playerRectangle.getY(), playerRectangle.getWidth(), playerRectangle.getHeight())) {
-                collidesHorizontally = true;
-            }
-            if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
-                collidesVertically = true;
-            }
-//            if (wall.collidesWithTest(newX, playerRectangle.getY(), playerRectangle.getWidth(), getHeight())){
+
+            boolean isMoving = wall.isMoving();
+//            if (wall.collidesHorizontally(newX, playerRectangle.getY(), playerRectangle.getWidth(), playerRectangle.getHeight())) {
 //                collidesHorizontally = true;
 //            }
-//            if (wall.collidesWithTest(playerRectangle.getX(), getY(), playerRectangle.getWidth(), playerRectangle.getHeight())){
+//            if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
 //                collidesVertically = true;
 //            }
+            if (!isMoving){
+                if (wall.collidesHorizontally(newX, playerRectangle.getY(), playerRectangle.getWidth(), playerRectangle.getHeight())) {
+                    collidesHorizontally = true;
+                }
+                if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
+                    collidesVertically = true;
+                }
+            }else {
+                // Extra collision check for moving walls
+                if (wall.collidesWith(newX, newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
+                    collidesHorizontally = true;
+                    collidesVertically = true;
+                }
+            }
+
+
+
         }
 
         // Update position if no collision
@@ -272,10 +285,10 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
             if (wall.collidesVertically(hunterRectangle.getX(), newY, hunterRectangle.getWidth(), hunterRectangle.getHeight())) {
                 collidesVertically = true;
             }
-//            if (wall.collidesWithTest(newX, hunterRectangle.getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())){
+//            if (wall.collidesWith(newX, hunterRectangle.getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())){
 //                collidesHorizontally = true;
 //            }
-//            if (wall.collidesWithTest(hunterRectangle.getX(), getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())){
+//            if (wall.collidesWith(hunterRectangle.getX(), getY(), hunterRectangle.getWidth(), hunterRectangle.getHeight())){
 //                collidesVertically = true;
 //            }
         }
