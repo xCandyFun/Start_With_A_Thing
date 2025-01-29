@@ -94,7 +94,7 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         walls.add(new Wall(838,450,150,20));
 
         Wall dynamicWall = new Wall(400, 300, 100, 20);
-        dynamicWall.setMovement(0,6,1, 200,200, 150,420);
+        dynamicWall.setMovement(0,1,2, 200,200, 220,380);
         walls.add(dynamicWall);
 
         // Add a ComponentListener to ensure the panel is ready before spawning the circle
@@ -168,32 +168,61 @@ public class TheMainGameLogic extends JPanel implements KeyListener {
         boolean collidesVertically = false;
 
         // Check wall collisions
+        //todo two wall bugs - 1. player teleport when max or min hits 2. hit the side of the moving wall
         for (Wall wall : walls) {
-
             boolean isMoving = wall.isMoving();
-//            if (wall.collidesHorizontally(newX, playerRectangle.getY(), playerRectangle.getWidth(), playerRectangle.getHeight())) {
-//                collidesHorizontally = true;
-//            }
-//            if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
-//                collidesVertically = true;
-//            }
-            if (!isMoving){
+
+            // Check if the wall is not moving (static)
+            if (!isMoving) {
                 if (wall.collidesHorizontally(newX, playerRectangle.getY(), playerRectangle.getWidth(), playerRectangle.getHeight())) {
                     collidesHorizontally = true;
                 }
                 if (wall.collidesVertically(playerRectangle.getX(), newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
                     collidesVertically = true;
                 }
-            }else {
-                // Extra collision check for moving walls
+            } else {
+                // Wall is moving - check for collisions
                 if (wall.collidesWith(newX, newY, playerRectangle.getWidth(), playerRectangle.getHeight())) {
                     collidesHorizontally = true;
                     collidesVertically = true;
+
+                    // Only push the player if the wall is actively moving
+                    if (wall.getDx() != 0 || wall.getDy() != 0) {
+                        int moveX = wall.getDx() * wall.getSpeed();
+                        int moveY = wall.getDy() * wall.getSpeed();
+
+                        // Handle horizontal collision
+                        if (moveX != 0) {
+                            if (moveX > 0) {
+                                // If moving right, push player to the right edge of the wall
+                                if (newX + playerRectangle.getWidth() > wall.getX()) {
+                                    playerRectangle.setX(wall.getX() + wall.getWidth());
+                                }
+                            } else {
+                                // If moving left, push player to the left edge of the wall
+                                if (newX < wall.getX() + wall.getWidth()) {
+                                    playerRectangle.setX(wall.getX() - playerRectangle.getWidth());
+                                }
+                            }
+                        }
+
+                        // Handle vertical collision
+                        if (moveY != 0) {
+                            if (moveY > 0) {
+                                // If moving down, push player to the bottom edge of the wall
+                                if (newY + playerRectangle.getHeight() > wall.getY()) {
+                                    playerRectangle.setY(wall.getY() + wall.getHeight());
+                                }
+                            } else {
+                                // If moving up, push player to the top edge of the wall
+                                if (newY < wall.getY() + wall.getHeight()) {
+                                    playerRectangle.setY(wall.getY() - playerRectangle.getHeight());
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-
-
         }
 
         // Update position if no collision

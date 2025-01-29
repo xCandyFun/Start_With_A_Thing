@@ -39,6 +39,18 @@ public class Wall {
         return height;
     }
 
+    public int getDx() {
+        return dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
     //Check if a rectangle collides with walls
 //    public boolean collidesWith(int rectX, int rectY, int rectWidth, int rectHeight) {
 //        return rectX < x + width && rectX + rectWidth > x && rectY < y + height && rectY + rectHeight > y;
